@@ -25,19 +25,19 @@ class ArmoryCli < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/armory-io/armory-cli/releases/download/v1.0.8/armory-linux-amd64"
-      sha256 "5bc24022b033312e830bd60019223eab871ffcf48d15911d6d38ec10cc85a838"
-
-      def install
-        bin.install "armory-linux-amd64" => "armory"
-      end
-    end
-    if Hardware::CPU.intel?
       url "https://github.com/armory-io/armory-cli/releases/download/v1.0.8/armory-linux-arm64"
       sha256 "7bb97841defb4bd6c828f512e94967c3915fc7a7783dd3819ee5228c64b480d5"
 
       def install
         bin.install "armory-linux-arm64" => "armory"
+      end
+    end
+    if Hardware::CPU.intel?
+      url "https://github.com/armory-io/armory-cli/releases/download/v1.0.8/armory-linux-amd64"
+      sha256 "5bc24022b033312e830bd60019223eab871ffcf48d15911d6d38ec10cc85a838"
+
+      def install
+        bin.install "armory-linux-amd64" => "armory"
       end
     end
   end
