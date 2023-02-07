@@ -1,10 +1,10 @@
-# Armory-io Armory-cli
+# Armory-io Armory
 
 ## How do I install these formulae?
 
-`brew install armory-io/armory-cli/<formula>`
+`brew install armory-io/armory/<formula>`
 
-Or `brew tap armory-io/armory-cli` and then `brew install <formula>`.
+Or `brew tap armory-io/armory` and then `brew install <formula>`.
 
 ## Documentation
 
