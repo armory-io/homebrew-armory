@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: copy template into formula
         run: cp armory-cli_formula_template.txt ./Formula/armory-cli.rb
       - name: replace version number
@@ -18,14 +18,14 @@ jobs:
       - name: construct base URL
         id: constructBaseUrl
         run: |
-          echo ::set-output name=baseUrl::'https://github.com/armory-io/armory-cli/releases/download/v${{ github.event.client_payload.version }}/armory'
+          echo "baseUrl='https://github.com/armory-io/armory-cli/releases/download/v${{ github.event.client_payload.version }}/armory'" >> $GITHUB_OUTPUT
       - name: compute Shas
         id: computeShas
         run: |
-          echo ::set-output name=darwinAmd64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-amd64 | shasum -a 256 | head -c 64)
-          echo ::set-output name=darwinArm64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-arm64 | shasum -a 256 | head -c 64)
-          echo ::set-output name=linuxAmd64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-amd64 | shasum -a 256 | head -c 64)
-          echo ::set-output name=linuxArm64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-arm64 | shasum -a 256 | head -c 64)
+          echo "darwinAmd64Sha=$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-amd64 | shasum -a 256 | head -c 64)" >> $GITHUB_OUTPUT
+          echo "darwinArm64Sha=$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-arm64 | shasum -a 256 | head -c 64)" >> $GITHUB_OUTPUT
+          echo "linuxAmd64Sha=$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-amd64 | shasum -a 256 | head -c 64)" >> $GITHUB_OUTPUT
+          echo "linuxArm64Sha=$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-arm64 | shasum -a 256 | head -c 64)" >> $GITHUB_OUTPUT
       - name: replace shas in formula
         run: |
           perl -i -pe"s/#darwin-amd64-sha/${{ steps.computeShas.outputs.darwinAmd64Sha }}/g" ./Formula/armory-cli.rb
