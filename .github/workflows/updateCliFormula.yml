@@ -5,27 +5,21 @@ on:
     types: UpdateCliFormula
 
 jobs:
+    env:
+        version: ${{ github.event.client_payload.version }}
   update_formula:
-    name: Update CLI Formula to ${{ github.event.client_payload.version }}
+    name: Update CLI Formula to ${{env.version}}
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v2
-      - name: write metadata
-        run: |
-          version=1.0.8
-          urlPrefix=https://github.com/armory-io/armory-cli/releases/download/v$version
-          cp armory-cli_formula_template.txt ./Formula/armory-cli.rb
-          perl -i -pe"s/#VERSION/$version/g" ./Formula/armory-cli.rb
-          darwinAmd64Sha=$(curl -Ls $urlPrefix/armory-darwin-amd64 | shasum -a 256 | head -c 64)
-          perl -i -pe"s/#darwin-amd64-sha/$darwinAmd64Sha/g" ./Formula/armory-cli.rb
-          darwinArm64Sha=$(curl -Ls $urlPrefix/armory-darwin-arm64 | shasum -a 256 | head -c 64)
-          perl -i -pe"s/#darwin-arm64-sha/$darwinArm64Sha/g" ./Formula/armory-cli.rb
-          linuxAmd64Sha=$(curl -Ls $urlPrefix/armory-linux-amd64 | shasum -a 256 | head -c 64)
-          perl -i -pe"s/#linux-amd64-sha/$linuxAmd64Sha/g" ./Formula/armory-cli.rb
-          linuxArm64Sha=$(curl -Ls $urlPrefix/armory-linux-arm64 | shasum -a 256 | head -c 64)
-          perl -i -pe"s/#linux-arm64-sha/$linuxArm64Sha/g" ./Formula/armory-cli.rb
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Update CLI Formula to ${{ github.event.client_payload.version }}
-          branch: main
+      - name: updated formula
+        env:
+          urlPrefix: 'https://github.com/armory-io/armory-cli/releases/download/v${{env.version}}'
+        run: echo ${{env.urlPrefix}}
+        run: cp armory-cli_formula_template.txt ./Formula/armory-cli.rb
+        run: perl -i -pe"s/#VERSION/$version/g" ./Formula/armory-cli.rb
+        run: darwinAmd64Sha=$(curl -Ls $urlPrefix/armory-darwin-amd64 | shasum -a 256 | head -c 64)
+        run: perl -i -pe"s/#darwin-amd64-sha/$darwinAmd64Sha/g" ./Formula/armory-cli.rb
+        run: cat ./Formula/armory-cli.rb
+      
