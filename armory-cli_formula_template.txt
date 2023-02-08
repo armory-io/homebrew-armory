@@ -1,0 +1,48 @@
+class ArmoryCli < Formula
+  desc "CLI for Armory CD-as-a-Service"
+  homepage "https://docs.armory.io/cd-as-a-service/setup/cli/"
+  version "#VERSION"
+  license "Apache-2.0"
+
+  on_macos do
+    if Hardware::CPU.intel?
+      url "https://github.com/armory-io/armory-cli/releases/download/v#VERSION/armory-darwin-amd64"
+      sha256 "#darwin-amd64-sha"
+
+      def install
+        bin.install "armory-darwin-amd64" => "armory"
+      end
+    end
+    if Hardware::CPU.arm?
+      url "https://github.com/armory-io/armory-cli/releases/download/v#VERSION/armory-darwin-arm64"
+      sha256 "#darwin-arm64-sha"
+
+      def install
+        bin.install "armory-darwin-arm64" => "armory"
+      end
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      url "https://github.com/armory-io/armory-cli/releases/download/v#VERSION/armory-linux-arm64"
+      sha256 "#linux-arm64-sha"
+
+      def install
+        bin.install "armory-linux-arm64" => "armory"
+      end
+    end
+    if Hardware::CPU.intel?
+      url "https://github.com/armory-io/armory-cli/releases/download/v#VERSION/armory-linux-amd64"
+      sha256 "#linux-amd64-sha"
+
+      def install
+        bin.install "armory-linux-amd64" => "armory"
+      end
+    end
+  end
+
+  test do
+    system "#{bin}/armory", "version"
+  end
+end
