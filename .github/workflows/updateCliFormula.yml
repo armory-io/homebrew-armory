@@ -5,8 +5,8 @@ on:
     types: UpdateCliFormula
 
 jobs:
-    env:
-        version: '${{ github.event.client_payload.version }}''
+  env:
+    version: ${{ github.event.client_payload.version }}
   update_formula:
     name: Update CLI Formula to ${{env.version}}
     runs-on: ubuntu-latest
