@@ -6,20 +6,37 @@ on:
 
 jobs:
   update_formula:
-    env:
-      version: ${{ github.event.client_payload.version }}
-    name: Update CLI Formula to ${{env.version}}
+    name: Update CLI Formula to ${{ github.event.client_payload.version }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v2
-      - name: updated formula
-        env:
-          urlPrefix: 'https://github.com/armory-io/armory-cli/releases/download/v${{env.version}}'
-        run: echo ${{env.urlPrefix}}
+      - name: copy template into formula
         run: cp armory-cli_formula_template.txt ./Formula/armory-cli.rb
-        run: perl -i -pe"s/#VERSION/$version/g" ./Formula/armory-cli.rb
-        run: darwinAmd64Sha=$(curl -Ls $urlPrefix/armory-darwin-amd64 | shasum -a 256 | head -c 64)
-        run: perl -i -pe"s/#darwin-amd64-sha/$darwinAmd64Sha/g" ./Formula/armory-cli.rb
+      - name: replace version number
+        run: perl -i -pe"s/#VERSION/${{ github.event.client_payload.version }}/g" ./Formula/armory-cli.rb
+      - name: construct base URL
+        id: constructBaseUrl
+        run: |
+          echo ::set-output name=baseUrl::'https://github.com/armory-io/armory-cli/releases/download/v${{ github.event.client_payload.version }}/armory'
+      - name: compute Shas
+        id: computeShas
+        run: |
+          echo ::set-output name=darwinAmd64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-amd64 | shasum -a 256 | head -c 64)
+          echo ::set-output name=darwinArm64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-darwin-arm64 | shasum -a 256 | head -c 64)
+          echo ::set-output name=linuxAmd64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-amd64 | shasum -a 256 | head -c 64)
+          echo ::set-output name=linuxArm64Sha::$(curl -Ls ${{ steps.constructBaseUrl.outputs.baseUrl }}-linux-arm64 | shasum -a 256 | head -c 64)
+      - name: replace shas in formula
+        run: |
+          perl -i -pe"s/#darwin-amd64-sha/${{ steps.computeShas.outputs.darwinAmd64Sha }}/g" ./Formula/armory-cli.rb
+          perl -i -pe"s/#darwin-arm64-sha/${{ steps.computeShas.outputs.darwinArm64Sha }}/g" ./Formula/armory-cli.rb
+          perl -i -pe"s/#linux-amd64-sha/${{ steps.computeShas.outputs.linuxAmd64Sha }}/g" ./Formula/armory-cli.rb
+          perl -i -pe"s/#linux-arm64-sha/${{ steps.computeShas.outputs.linuxArm64Sha }}/g" ./Formula/armory-cli.rb
+      - name: print changed formula
         run: cat ./Formula/armory-cli.rb
+      - name: commit formula
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update CLI Formula to ${{ github.event.client_payload.version }}
+          branch: main
       
