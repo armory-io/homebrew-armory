@@ -1,21 +1,21 @@
 class ArmoryCli < Formula
   desc "CLI for Armory CD-as-a-Service"
   homepage "https://docs.armory.io/cd-as-a-service/setup/cli/"
-  version "1.14.1"
+  version "1.14.3"
   license "Apache-2.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.1/armory-darwin-amd64"
-      sha256 "df2b892f8014eff7da445c4c14f388fbe9967c0a9b2d49af2ea0b14ad4ee96f0"
+      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.3/armory-darwin-amd64"
+      sha256 "cfecc52a07783bc3462c3f630910737e6508d1e0517cfcf714e98761f11e16eb"
 
       def install
         bin.install "armory-darwin-amd64" => "armory"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.1/armory-darwin-arm64"
-      sha256 "6f97ae179fbbca034f6f6a00e8f0f4807b8f305c2e701a07f68f776a76ac4eca"
+      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.3/armory-darwin-arm64"
+      sha256 "9d65c41685f9bc674fd50cf905dc4959798205b234148d90b72a3505c9cde89c"
 
       def install
         bin.install "armory-darwin-arm64" => "armory"
@@ -25,16 +25,16 @@ class ArmoryCli < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.1/armory-linux-arm64"
-      sha256 "7d31199f93a4f719adc4e4410fb8ddca581f107b56cff23f0ea84bce01175a4b"
+      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.3/armory-linux-arm64"
+      sha256 "472ade6e624ba4ff6a7983891d2907671af1f8a082789b2b55ae3ced04d427ee"
 
       def install
         bin.install "armory-linux-arm64" => "armory"
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.1/armory-linux-amd64"
-      sha256 "2c98c358c418476362b6fa2717b1e535ae582ae033b7a2f038d3850301f00947"
+      url "https://github.com/armory-io/armory-cli/releases/download/v1.14.3/armory-linux-amd64"
+      sha256 "f2337878835e06cdc956cd21dde7d6e7477dac3d854e8b6962dd419c45ede67d"
 
       def install
         bin.install "armory-linux-amd64" => "armory"
