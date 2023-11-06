@@ -18,7 +18,7 @@ jobs:
       - name: construct base URL
         id: constructBaseUrl
         run: |
-          echo "baseUrl='https://github.com/armory-io/armory-cli/releases/download/v${{ github.event.client_payload.version }}/armory'" >> $GITHUB_OUTPUT
+          echo "baseUrl='https://armory-cli-releases.s3.amazonaws.com/cli/v${{ github.event.client_payload.version }}/armory'" >> $GITHUB_OUTPUT
       - name: compute Shas
         id: computeShas
         run: |
@@ -39,4 +39,3 @@ jobs:
         with:
           commit_message: Update CLI Formula to ${{ github.event.client_payload.version }}
           branch: main
-      
